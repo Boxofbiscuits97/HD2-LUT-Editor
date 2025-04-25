@@ -1,4 +1,4 @@
-# HD2-Lut-Editor
+# HD2-LUT-Editor
 Blender Addon to assist in Editing LUT textures in Helldivers 2
 
 ## Special Thanks

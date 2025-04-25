@@ -6,6 +6,15 @@
 
 # Shader bundled with filediver with permission from @thejudsub
 
+# Continued Integrations with Blender workflow by Boxofbiscuits97
+
+bl_info = {
+    "name": "Helldivers 2 LUT Editor",
+    "version": (0, 0, 1),
+    "blender": (4, 0, 0),
+    "category": "Import-Export",
+}
+
 import bpy
 from bpy.types import (
     NodeTree,
@@ -40,7 +49,7 @@ class NODE_PT_MAINPANEL(bpy.types.Panel):
     bl_idname = "NODE_PT_capecontrols"
     bl_space_type = 'NODE_EDITOR'
     bl_region_type = 'UI'
-    bl_category = 'HD2 Shader'
+    bl_category = 'HD2 LUT Editor'
 
     def draw(self, context):
         layout = self.layout
