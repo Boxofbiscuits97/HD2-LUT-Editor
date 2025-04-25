@@ -45,7 +45,7 @@ import math
 ScriptVersion = "_1.0.6c"
 
 class NODE_PT_MAINPANEL(bpy.types.Panel):
-    bl_label = "Helldivers 2 Cape Shader"
+    bl_label = f"Helldivers 2 LUT Editor v{bl_info['version'][0]}.{bl_info['version'][1]}.{bl_info['version'][2]}"
     bl_idname = "NODE_PT_capecontrols"
     bl_space_type = 'NODE_EDITOR'
     bl_region_type = 'UI'
@@ -12982,11 +12982,26 @@ def update_slot_defaults(hd2_shader: NodeTree, material: Material):
     if PrimaryMaterialLUTSizeY < 6.1:
         Slot7.mute = True
 
+def check_valid_material(self):
+    active_object = bpy.context.active_object
+    if active_object == None:
+        self.report({'ERROR'}, f"No Active Object Selected!")
+        return True
+    if active_object.active_material == None:
+        self.report({'ERROR'}, f"No Active Material on object: {active_object.name}")
+        return True
+    material = bpy.context.active_object.active_material
+    if "HD2 Shader Template" not in material.node_tree.nodes:
+        self.report({'ERROR'}, f"Material: {material.name} is not an HD2 Acurate Shader")
+        return True
+    return False
+
 class CreateShader(bpy.types.Operator):
     bl_label = ("(Re)Build Shader")
     bl_idname = "node.create_operator"
 
     def execute(self, context):
+        if check_valid_material(self): return {'CANCELLED'}
         custom_node_name = ("HD2 Shader Template File Do Not Name Anything Else This Name")
         GroupNode = create_HD2_Shader(self, context, custom_node_name)
 
@@ -12997,7 +13012,10 @@ class UpdateShader(bpy.types.Operator):
     bl_idname = "node.update_operator"
 
     def execute(self, context):
-        node_tree = bpy.context.active_object.active_material.node_tree.nodes["HD2 Shader Template"].node_tree
+        if check_valid_material(self): return {'CANCELLED'}
+        material = bpy.context.active_object.active_material
+        shader_template = material.node_tree.nodes["HD2 Shader Template"]
+        node_tree = shader_template.node_tree
         #GroupNode = bpy.data.node_groups[custom_node_name]
         update_images(node_tree, bpy.context.active_object.active_material)
         add_bake_uvs(bpy.context.active_object)
